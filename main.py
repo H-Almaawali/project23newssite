@@ -17,6 +17,29 @@
 import webapp2
 import jinja2
 import os
+from firebase import firebase as fb
+import logging
+
+myFirebase = fb.FirebaseApplication('https://rsstest.firebaseio.com/')
+
+articlesResult = myFirebase.get('/articles', None)
+
+class Article(object):
+	def __init__(self, title, body, link):
+		self.title = title
+		self.body = body
+		self.link = link
+
+articles = []
+
+for article in articlesResult:
+	newArticle = Article(articlesResult[article]['title'], 
+		articlesResult[article]['body'], 
+		articlesResult[article]['link'])
+	articles.append(newArticle)
+
+for i in articles:
+	logging.info(i.title)
 
 ENVIRONMENT = jinja2.Environment(
 	loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates')),
